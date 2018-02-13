@@ -33,7 +33,7 @@ class Contestant(object):
         self.heightNode = Node(name, 'height', height)
         self.weightNode = Node(name, 'weight', weight)
 
-class Data(object):
+class ContestantList(object):
     def __init__(self):
         self.database = {}
         self.age_front = None
@@ -43,7 +43,7 @@ class Data(object):
         self.height_front = None
         self.height_tail = None
 
-    def _inserting_node_to_list(self, front, tail, node):
+    def __inserting_node_to_list(self, front, tail, node):
         # base case 1: empty list
         if front == None:
             front = tail = node
@@ -75,7 +75,7 @@ class Data(object):
                 tempNode.prev = node
         return front, tail
 
-    def _return_name_list(self, front, tail):
+    def __return_name_list(self, front, tail):
         output = []
         tempNode = copy.deepcopy(front)
         while tempNode:
@@ -86,9 +86,9 @@ class Data(object):
     def add(self, name, age, weight, height):
         if name not in self.database:
             new = Contestant(name, age, weight, height)
-            self.age_front, self.age_tail = self._inserting_node_to_list(self.age_front, self.age_tail, new.ageNode)
-            self.weight_front, self.weight_tail = self._inserting_node_to_list(self.weight_front, self.weight_tail, new.weightNode)
-            # self.height_front, self.height_tail = self._inserting_node_to_list(self.height_front, self.height_tail, new.age)
+            self.age_front, self.age_tail = self.__inserting_node_to_list(self.age_front, self.age_tail, new.ageNode)
+            self.weight_front, self.weight_tail = self.__inserting_node_to_list(self.weight_front, self.weight_tail, new.weightNode)
+            self.height_front, self.height_tail = self.__inserting_node_to_list(self.height_front, self.height_tail, new.heightNode)
             self.database[name] = new
 
     def getAge(self, name):
@@ -97,19 +97,21 @@ class Data(object):
 
     def sorted(self, metric):
         if metric == 'A':
-            return self._return_name_list(self.age_front, self.age_tail)
+            return self.__return_name_list(self.age_front, self.age_tail)
         elif metric == 'W':
-            return self._return_name_list(self.weight_front, self.weight_tail)
+            return self.__return_name_list(self.weight_front, self.weight_tail)
+        elif metric == 'H':
+            return self.__return_name_list(self.height_front, self.height_tail)
 
 def main(argv):
-    database = Data()
-    database.add('Andy', 17, 170, 10)
-    database.add('Bob',  32, 170, 9)
-    database.add('Jacob',30, 170, 8)
-    database.add('Mary', 20, 170, 7)
-
-    print ("Andy's age is: {}".format(database.getAge('Andy')))
-    print ("List of competitors in order of age: {}".format(database.sorted('A')))
-    print ("List of competitors in order of weight: {}".format(database.sorted('W')))
+    cl = ContestantList()
+    cl.add('Andy', 17, 180, 10)
+    cl.add('Bob',  32, 170, 9)
+    cl.add('Jacob',30, 175, 8)
+    cl.add('Mary', 20, 160, 7)
+    print ("Andy's age is: {}".format(cl.getAge('Andy')))
+    print ("List of competitors in order of age: {}".format(cl.sorted('A')))
+    print ("List of competitors in order of weight: {}".format(cl.sorted('W')))
+    print ("List of competitors in order of height: {}".format(cl.sorted('H')))
 if __name__ == '__main__':
     main(sys.argv[1:])

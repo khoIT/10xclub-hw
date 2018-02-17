@@ -11,12 +11,17 @@ def max_stock_price(arr):
     high = arr[0]
     low = arr[0]
     max_distance = high - low
-    for price in arr:
+    small_index = large_index = 0
+    low_index = high_index = 0
+    for idx, price in enumerate(arr):
         if price < low:
-            low = price
-            high = price
+            low = high = price
+            low_index = high_index = idx
         if price > high:
             high = price
+            high_index = idx
             if high - low > max_distance:
                 max_distance = high-low
-    return max_distance
+                small_index = low_index
+                large_index = high_index
+    return small_index, large_index, max_distance

@@ -35,9 +35,10 @@ class LinkedList(object):
         return value
 
     def add_at(self, index, value):
-        ''' Only supporting index in 0 < index < len(linkedlist)
+        ''' Only supporting index in 0 <= index < len(linkedlist)
         '''
-        if index > self.length:
+        print("Adding {} at index {}".format(value, index))
+        if index > self.length or index < 0:
             return -1
 
         node = Node(value)
@@ -60,20 +61,47 @@ class LinkedList(object):
         return index
 
     def delete_start(self):
+        print("Deleting start")
         if self.length == 0:
             return -1
         if self.length == 1:
             self.head = self.tail = None
+            self.length -= 1
             return 0
         else:
             self.head.next.prev = None
             self.head = self.head.next
+            self.length -= 1
             return 0
 
-    def delete_end(self, value):
-        return True
-    def delete_at(self, value):
-        return True
+    def delete_end(self):
+        print("Deleting end")
+        if self.length == 0:
+            return -1
+        if self.length == 1:
+            self.head = self.tail = None
+            self.length -= 1
+            return 0
+        else:
+            self.tail.prev.next = None
+            self.tail = self.tail.prev
+            self.length -= 1
+            return 0
+
+    def delete_at(self, index):
+        print("Deleting at index {}".format(index))
+        if self.length == 0 or index > self.length or index < 0:
+            return -1
+        curr = self.head
+        while index > 0:
+            curr = curr.next
+            index -= 1
+        if curr.prev:
+            curr.prev.next = curr.next
+        if curr.next:
+            curr.next.prev = curr.prev
+        self.length -= 1
+        return index
 
     def get(self, index):
         curr = self.head
@@ -86,7 +114,15 @@ class LinkedList(object):
             return "None"
 
     def index_of(self, value):
-        return True
+        curr = self.head
+        index = 0
+        while curr:
+            if curr.value == value:
+                return index
+            index += 1
+            curr = curr.next
+        return -1
+
     def print_to_file(self, filename):
         return True
 
@@ -101,10 +137,20 @@ def main(argv):
     double_link.add_at(0, 0)
     for i in xrange(0, double_link.length):
         print("Element index {} of list is: {}".format(i, double_link.get(i)))
-    print("Deleting start")
+
     double_link.delete_start()
     for i in xrange(0, double_link.length):
         print("Element index {} of list is: {}".format(i, double_link.get(i)))
 
+    double_link.delete_end()
+    for i in xrange(0, double_link.length):
+        print("Element index {} of list is: {}".format(i, double_link.get(i)))
+
+    double_link.add_at(0, 0)
+    double_link.delete_at(3)
+    for i in xrange(0, double_link.length):
+        print("Element index {} of list is: {}".format(i, double_link.get(i)))
+    print("Element with value {} in list is at index: {}".format(3, double_link.index_of(3)))
+    print("Element with value {} in list is at index: {}".format(4, double_link.index_of(4)))
 if __name__ == '__main__':
     main(sys.argv[1:])

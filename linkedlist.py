@@ -59,8 +59,17 @@ class LinkedList(object):
         self.length += 1
         return index
 
-    def delete_start(self, value):
-        return True
+    def delete_start(self):
+        if self.length == 0:
+            return -1
+        if self.length == 1:
+            self.head = self.tail = None
+            return 0
+        else:
+            self.head.next.prev = None
+            self.head = self.head.next
+            return 0
+
     def delete_end(self, value):
         return True
     def delete_at(self, value):
@@ -90,7 +99,11 @@ def main(argv):
     double_link.add_end(5)
     double_link.add_at(3, 4)
     double_link.add_at(0, 0)
-    for i in xrange(0, 5):
+    for i in xrange(0, double_link.length):
+        print("Element index {} of list is: {}".format(i, double_link.get(i)))
+    print("Deleting start")
+    double_link.delete_start()
+    for i in xrange(0, double_link.length):
         print("Element index {} of list is: {}".format(i, double_link.get(i)))
 
 if __name__ == '__main__':

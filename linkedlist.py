@@ -124,7 +124,14 @@ class LinkedList(object):
         return -1
 
     def print_to_file(self, filename):
-        return True
+        curr = self.head
+        with open(filename, 'w') as fp:
+            fp.write("graph { \n")
+            while curr and curr.next:
+                fp.write("{} -- {}; \n".format(curr.value, curr.next.value))
+                curr = curr.next
+            fp.write("}")
+        fp.close()
 
 def main(argv):
     double_link = LinkedList()
@@ -152,5 +159,6 @@ def main(argv):
         print("Element index {} of list is: {}".format(i, double_link.get(i)))
     print("Element with value {} in list is at index: {}".format(3, double_link.index_of(3)))
     print("Element with value {} in list is at index: {}".format(4, double_link.index_of(4)))
+    double_link.print_to_file('/Users/ktran/Desktop/temp')
 if __name__ == '__main__':
     main(sys.argv[1:])

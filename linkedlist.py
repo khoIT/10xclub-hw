@@ -10,6 +10,7 @@ class LinkedList(object):
     def __init__(self):
         self.head = None
         self.tail = None
+        self.length = 0
 
     def add_start(self, value):
         node = Node(value)
@@ -19,6 +20,7 @@ class LinkedList(object):
             node.next = self.head
             self.head.prev = node
             self.head = node
+        self.length += 1
         return value
 
     def add_end(self, value):
@@ -29,17 +31,23 @@ class LinkedList(object):
             self.tail.next = node
             node.prev = self.tail
             self.tail = node
+        self.length += 1
         return value
 
     def add_at(self, index, value):
-        ''' Only supporting index in 0 < index < len(linkedlist)'''
+        ''' Only supporting index in 0 < index < len(linkedlist)
+        '''
+        if index > self.length:
+            return -1
+
         node = Node(value)
         curr = self.head
-        while index > 0:
+        while index > 0 and curr:
             curr = curr.next
             index -= 1
         if not curr:
             self.head = self.tail = node
+            self.length += 1
             return index
         if curr.prev:
             curr.prev.next = node
@@ -48,6 +56,7 @@ class LinkedList(object):
             self.head = node
         curr.prev = node
         node.next = curr
+        self.length += 1
         return index
 
     def delete_start(self, value):
@@ -74,13 +83,13 @@ class LinkedList(object):
 
 def main(argv):
     double_link = LinkedList()
-    double_link.add_at(1, 1)
+    double_link.add_at(3, 15)
     double_link.add_start(3)
-    # double_link.add_start(2)
-    # double_link.add_start(1)
-    # double_link.add_end(5)
-    # double_link.add_at(3, 4)
-    # double_link.add_at(0, 0)
+    double_link.add_start(2)
+    double_link.add_start(1)
+    double_link.add_end(5)
+    double_link.add_at(3, 4)
+    double_link.add_at(0, 0)
     for i in xrange(0, 5):
         print("Element index {} of list is: {}".format(i, double_link.get(i)))
 

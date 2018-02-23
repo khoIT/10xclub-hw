@@ -6,9 +6,9 @@ import sys
 from sets import Set
 
 class Node(object):
-    def __init__(self, char, idx):
+    def __init__(self, char, value):
         self.char = char
-        self.idx = idx
+        self.value = value
 
 class Heap(object):
     def __init__(self):
@@ -17,7 +17,7 @@ class Heap(object):
 
     def distance(self):
         if len(self.arr) == 3:
-            self.dist = abs(max(self.arr[1].idx, self.arr[2].idx) - self.arr[0].idx)
+            self.dist = abs(max(self.arr[1].value, self.arr[2].value) - self.arr[0].value)
         return self.dist
 
     def parent_node_heap_idx(self, node_idx):
@@ -34,7 +34,7 @@ class Heap(object):
         c2_idx = node_heap_idx * 2 + 2
         if c1_idx > len(self.arr) and c2_idx > len(self.arr):
             return node_heap_idx
-        if self.arr[c1_idx].idx < self.arr[c2_idx].idx:
+        if self.arr[c1_idx].value < self.arr[c2_idx].value:
             return node_heap_idx * 2 + 1
         else:
             return node_heap_idx * 2 + 2
@@ -45,7 +45,7 @@ class Heap(object):
         if node_heap_idx > 0:
             parent_node_heap_idx = self.parent_node_heap_idx(node_heap_idx)
             parent_node = self.arr[parent_node_heap_idx]
-            while node.idx < parent_node.idx and node_heap_idx > 0:
+            while node.value < parent_node.value and node_heap_idx > 0:
                 self.arr[node_heap_idx], self.arr[parent_node_heap_idx] = self.arr[parent_node_heap_idx], self.arr[node_heap_idx]
                 node_heap_idx = parent_node_heap_idx
                 parent_node_heap_idx = self.parent_node_heap_idx(node_heap_idx)
@@ -55,7 +55,7 @@ class Heap(object):
         self.arr[0], self.arr[-1] = self.arr[-1], self.arr[0]
         popNode = self.arr.pop(-1)
         node_heap_idx = 0
-        if self.arr[0].idx > self.arr[1].idx:
+        if self.arr[0].value > self.arr[1].value:
             self.arr[0], self.arr[1] = self.arr[1], self.arr[0]
         return popNode
 
@@ -75,7 +75,7 @@ def shortest_list(arr, string):
                 import pdb; pdb.set_trace()
                 heap_distance = heap.distance()
                 temp_node = heap.pop()
-                if abs(idx - heap.peek().idx) < heap_distance :
+                if abs(idx - heap.peek().value) < heap_distance :
                     heap.add(Node(char, idx))
                 else:
                     heap.add(temp_node)

@@ -13,16 +13,12 @@ class Node(object):
 
 class Heap(object):
     def __init__(self):
+        self.max_index = 0
         self.arr = []
         self.dist = -1
 
-    def distance(self):
-        if len(self.arr) == 3:
-            self.dist = abs(max(self.arr[1].value, self.arr[2].value) - self.arr[0].value)
-        return self.dist
-
+    ''' should only get back idx within range of self.arr '''
     def parent_node_idx(self, node_idx):
-    ''' should only return idx within range of self.arr '''
         if node_idx > 1:
             if node_idx % 2 == 0:
                 return node_idx / 2 - 1
@@ -31,8 +27,8 @@ class Heap(object):
         else:
             return None
 
+    """ should only return idx within range of self.arr """
     def children_idx(self, node_heap_idx):
-    ''' should only return idx within range of self.arr '''
         c1_idx = node_heap_idx * 2 + 1
         c2_idx = node_heap_idx * 2 + 2
         if c1_idx < len(self.arr):
@@ -43,12 +39,19 @@ class Heap(object):
         else:
             return None, None
 
+    """ add in the newest node and remove the node with same char, which also is the min node at the top right now """
     def add(self, node):
-        # append node at the end before sifting it up the correct position
+        # only consider adding the new node if it can replace the node with smallest idx
+        if node.char != self.arr[0].char
+            return None
+
+        # keep track of the newest node idx
+        self.max_index = node.value
+
+        # start adding into our heap or self.arr
         self.arr.append(node)
         if len(self.arr) == 1:
-            return node_heap_idx
-
+            return len(self.arr)
         node_heap_idx = len(self.arr) - 1
         parent_node_idx = self.parent_node_idx(node_heap_idx)
         while parent_node_idx and node.value < self.arr[parent_node_idx].value:
@@ -71,25 +74,11 @@ class Heap(object):
 def shortest_list(arr, string):
     heap = Heap()
     idx = 0
-    seen = Set()
     while idx < len(string):
         char = string[idx]
-        if char in arr and char not in seen:
-            if len(heap.arr) < len(arr):
-                heap.add(Node(char, idx))
-            else:
-                heap_distance = heap.distance()
-                temp_node = heap.pop()
-                if abs(idx - heap.peek().value) < heap_distance :
-                    heap.add(Node(char, idx))
-                else:
-                    heap.add(temp_node)
-            seen.add(char)
-        if len(seen) == len(arr):
-            seen.remove(heap.peek().char)
+        if char in arr:
+            heap.add(Node(char, idx))
         idx += 1
-
-
     print heap.distance()
 def main(argv):
 

@@ -40,9 +40,11 @@ class BST(object):
         else:
             node = Node(arr[len(arr)/2])
             node.left = self.__create_tree(arr[0:len(arr)/2])
-            node.left.parent = node
+            if node.left:
+                node.left.parent = node
             node.right = self.__create_tree(arr[len(arr)/2+1:])
-            node.right.parent = node
+            if node.right:
+                node.right.parent = node
         return node
 
     def inorder_traversal(self, root):
@@ -51,6 +53,13 @@ class BST(object):
         print(" {} ".format(root.value))
         if root.right:
             self.inorder_traversal(root.right)
+
+    def preorder_traversal(self, root):
+        print(" {} ".format(root.value))
+        if root.left:
+            self.preorder_traversal(root.left)
+        if root.right:
+            self.preorder_traversal(root.right)
 
     def get_node(self, value):
         return True

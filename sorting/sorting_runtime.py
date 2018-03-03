@@ -2,6 +2,8 @@ from datetime import datetime
 import random, sys
 
 from merge_sort import merge_sort, merge_sort_iterative
+from heapsort import heapify, heapsort
+
 def bubble_sort(arr):
     i = 0
     while i < len(arr):
@@ -40,7 +42,7 @@ def selection_sort(arr):
 
 def constructin_array(size):
     arr = []
-    for i in xrange(0, size-1):
+    for i in xrange(0, size):
         # arr[i] = i
         # arr[i] = size-i
         arr.append(random.randrange(0, size))
@@ -53,11 +55,11 @@ def time_a_function(func, arg):
     return arg
 
 if __name__ == "__main__":
-    arr = constructin_array(3000)
-    print arr
-    time_a_function(bubble_sort, arr)
-    time_a_function(insertion_sort, arr)
-    time_a_function(selection_sort, arr)
+    arr = constructin_array(30000)
     time_a_function(merge_sort, arr)
     time_a_function(merge_sort_iterative, arr)
-    print ("Sorted arr: {}".format(arr))
+    arr = time_a_function(heapsort, arr)
+    time_a_function(insertion_sort, arr)
+    time_a_function(selection_sort, arr)
+    time_a_function(bubble_sort, arr)
+    print ("Sorted arr: First 100: {}.  last 100: {}".format(arr[:100], arr[-100:]))

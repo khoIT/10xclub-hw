@@ -6,6 +6,7 @@ from binary_search_tree import BST
 Return it's next laregest node.
 Each node has access to its parent
 '''
+
 def smallest_in_right_subtree(node):
     if node.left:
         return smallest_in_right_subtree(node.left)

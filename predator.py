@@ -1,4 +1,5 @@
 """
+Predator
 - each species has maximum of 1 direct predator
 - predator can be inherited
 - predator is one way relationship (no mutual predator each other)

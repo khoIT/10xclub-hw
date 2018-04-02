@@ -17,19 +17,26 @@ def longest_island_create(arr):
     # if that length is bigger than max length then update the max-length
     # because it's the longest island that can be created by converting W to L
     index = 0
-    while index < len(arr):
-        if arr[index] == 'L'
-            length = 0
+    max_length = 0
+    while index < len(arr)-1:
+        if arr[index] == 'L':
+            length = 1
             index += 1
         while arr[index] != 'W':
             length += 1
             index += 1
-        while arr[index] != 'L':
+        while index < len(arr) and arr[index] != 'L':
             length += 1
             index += 1
-        if length + 1 > max_length:
-            max_length = length + 1
+        while index < len(arr) and arr[index] == 'L':
+            length += 1
+            index += 1
+        if length > max_length:
+            max_length = length
+        if index < len(arr)-1:
+            index -= 1
     return max_length
 
 if __name__ == "__main__":
-    longest_island_create(['L', 'W', 'L', 'W', 'W', 'L', 'W'])
+    print longest_island_create(['L', 'W', 'L', 'W', 'W', 'L', 'W'])
+    print longest_island_create(["L", "W", "L", "W", "W", "L", "L"])

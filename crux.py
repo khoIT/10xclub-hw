@@ -48,3 +48,16 @@ if __name__ == "__main__":
     map = loadFile("https://storage.googleapis.com/coderpad/", "maping.csv")
     filtered_df = filter_data(data, ['Period','Insight_Score','Country','Industry','Product_Code'], 'Insight_Score > 2.5')
     joined_df = join_data(filtered_df, map)
+
+    # detect anomalies in Insight_Score using standard deviations
+    outliers = joined_df[['Period','Insight_Score']].groupby(['Period']).transform(lambda group: (group - group.mean()).abs().div(group.std())) > 1.0
+    new_df = joined_df[outliers.Insight_Score==False]
+
+    min_date = new_df.loc[new_df.groupby(['Industry'])['Insight_Score'].idxmin()]
+    max_date = new_df.loc[new_df.groupby(['Industry'])['Insight_Score'].idxmax()]
+    final_df = min_date.append(max_date)
+    final_df[['Industry','Period','Insight_Score']].sort_values(by=['Industry']).to_csv('datanew.csv')
+
+    # Find correlation
+    min_date = min_date[['Industry','Insight_Score']].set_index('Industry')
+    min_date = min_date[['Industry','Insight_Score']].set_index('Industry')

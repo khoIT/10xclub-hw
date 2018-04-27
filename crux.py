@@ -21,12 +21,14 @@ def filter_data(dataframe, columns, filter):
     Ex: "Insight_Score == 2.5"
     Columns should be a list of column names desired.
     """
-    column, operand, value_string = filter.split(" ")
+    # 0. Check columns list
     if not columns or type(columns) != list:
         dataframe = dataframe
     else:
         dataframe = dataframe[columns]
 
+    # 1. Check and process filter
+    column, operand, value_string = filter.split(" ")
     import operator
     switcher = {
         "==": operator.eq,
@@ -38,7 +40,6 @@ def filter_data(dataframe, columns, filter):
     compare = switcher.get(operand, "nothing")
     if compare == "nothing":
         return "Invalid syntax in filter"
-
 
     return dataframe.loc[compare(dataframe[column], float(value_string))]
 

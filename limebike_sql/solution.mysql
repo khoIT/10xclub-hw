@@ -1,0 +1,61 @@
+-- Rank bikes by how heavily they are used for June 2017, by user count,
+ -- and by trip count (two separate queries)
+select b.plate_number, count(u.id)
+from bikes b
+join trips t on b.id = t.bike_id
+join users u on u.id = t.user_id
+group by 1
+order by 2
+
+select b.plate_number, count(t.id)
+from bikes b
+join trips t on b.id = t.bike_id
+group by 1
+order by 2
+
+-- Calculate per region aggregated usage stats on a specific promotion named
+-- ‘TestPromo’. How many users, how many trips for each region.
+-- And how many percentage of the usage are in the first day of the promotion.
+
+select r.name, count(u.id), count(t.id)
+from regions r
+join trips t on t.region_id = r.id
+join users u on t.user_id = u.id
+join coupons c on t.coupon_id = c.id
+group by 1
+having c.name = 'TestPromo'
+
+
+-- Generate a table to store for each user, what is his/her last used bike,
+-- and what is his/her last used coupon
+
+select u.id u_id, c.id c_id, c.updated_at, b.id, b.updated_at b_up, b_latest
+from coupons c
+join users u
+on u.id = c.user_id
+join (select u.id as id, max(c.updated_at) as c_latest
+			from coupons c
+			join users u
+			on u.id = c.user_id
+			group by 1) as a
+on a.id = u.id
+join trips t
+on t.user_id = u.id
+left join bikes b
+on t.bike_id = b.id
+join (select u.id as id, max(b.updated_at) as b_latest
+			from bikes b
+			join trips t on t.bike_id = b.id
+			join users u on t.user_id = u.id
+			group by 1) as ba
+on ba.id = u.id
+where c.updated_at = c_latest
+and b.updated_at = b_latest
+
+
+
+-- From trips and users, generate a user daily spent table that has following
+-- columns: date, user_id, begin_balance, spent_amount_cents, num_trips.
+-- spent_amount_cents is the sum of cost_amount_cents for all the trips for the
+-- user that day. You can assume all the users start with 0 balance that it goes
+-- up for each trip, we will bill the user later.

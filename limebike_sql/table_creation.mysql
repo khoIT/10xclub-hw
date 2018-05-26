@@ -1,0 +1,71 @@
+CREATE TABLE users (id int(11) not null primary key,
+						 				created_at DATE not null,
+										updated_at DATE not null,
+										token varchar(16) not null unique,
+										phone_number varchar(191) unique,
+										email_address varchar(191) unique,
+										name varchar(191),
+										organization_id int(11), status varchar(191),
+										last_platform_used varchar(191),
+										latitude decimal(10,6), longitude decimal(10,6), login_count int(11),
+										mobile_registartion_id varchar(191)
+);
+
+
+CREATE TABLE bikes (id int(11) not null primary key,
+										plate_number varchar(191) not null unique,
+										imei varchar(191) not null unique,
+										status varchar(191), latitude decimal(10,6), longitude decimal(10,6),
+										created_at date not null,
+										updated_at date not null,
+										token varchar(16)
+);
+
+CREATE table trips (id int(11) not null primary key,
+										user_id int(11) not null,
+										bike_id int(11) not null,
+										status varchar(191) not null,
+										started_at date,
+										completed_at date,
+										distance_meters int(11), cost_amount_cents int(11),
+										created_at date not null,
+										updated_at date not null,
+										coupon_id int(11),
+										token varchar(16), start_latitude decimal(10, 6), start_longitude decimal(10,6),
+										base_cost_amount_cents int(11), refunded_amount_cents int(11),
+										region_id int(11)
+);
+
+CREATE table regions (id int(11) not null primary key,
+											name varchar(191) not null,
+											geohash varchar(191) not null,
+											description varchar(191),
+											polygon text not null,
+											created_at date not null,
+											updated_at date not null,
+											token varchar(16) not null,
+											sw_latitude decimal(10,6) not null,
+											sw_longitude decimal(10,6) not null,
+											ne_latitude decimal(10,6) not null,
+											ne_longitude decimal(10,6) not null,
+
+);
+
+CREATE table coupons (id int(11) not null primary key,
+											promotion_id int(11),
+											user_id int(11) not null,
+											status varchar(191) not null,
+											consumed_at date,
+											valid_until date not null,
+											created_at date not null,
+											updated_at date not null,
+											token varchar(16)
+);
+CREATE table promotions (id int(11) not null primary key,
+												 promotion_name varchar(191) not null,
+												 code varchar(191), start_at date not null,
+												 end_at date not null,
+												 created_at date not null,
+												 updated_at date not null,
+												 token char(16)
+);

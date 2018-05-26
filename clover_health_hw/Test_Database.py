@@ -9,7 +9,7 @@ class Test_Database(unittest.TestCase):
             ColumnSpec('test_column_1','10','TEXT'),
             ColumnSpec('test_column_2','10','TEXT')
         ]
-        self.table_spec = TableSpec('test_file',specs)
+        self.table_spec = TableSpec('test_table',specs)
         # can set up a separate test db
         self.db = Database("localhost", "root", "password", "cloverhealth")
 

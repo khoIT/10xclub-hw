@@ -12,10 +12,18 @@ class ColumnSpec(object):
         self.width = width
         self.datatype = datatype.title()
 
-class DataRow(object):
-    def __init__(self, row):
-        self.row = row
+class DataFile(object):
+    def __init__(self, file_path, table_spec, rows):
+        self.tableSpec = tableSpec
+        self.row = rows
 
+def parseDataFile(file_path, table_spec):
+    columns = []
+    with open(file_path,'r') as df:
+        for line in df:
+            columns.append(line.strip().split(' '))
+    sf.close()
+    return DataFile(file_path, table_spec, columns)
 
 def parseSpecsFile(file_path):
     columns = []

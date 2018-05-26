@@ -9,7 +9,7 @@ class Database(object):
         self.engine = create_engine(engine_creds)
         self.metadata = MetaData(self.engine)
 
-    def __create_sqlalchemy_tableclass(self, tableSpec):
+    def __create_sqlalchemy_tableclass(self, table_spec):
         def column_generation(spec):
             mapping = {
                 'Text': Column(String(int(spec.width))),
@@ -21,9 +21,9 @@ class Database(object):
         allow dynamic column to be added in this tableClass as long as column type is
         valid in mapping dictionary
         """
-        attr_dict = {'__tablename__': tableSpec.name,
+        attr_dict = {'__tablename__': table_spec.name,
                     'id': Column(Integer, primary_key=True)}
-        for spec in tableSpec.specs:
+        for spec in table_spec.specs:
             attr_dict[spec.column_name] = column_generation(spec)
 
         # create class using inheritance from sqlalchemy.Base
@@ -47,12 +47,15 @@ class Database(object):
         # TODO: delete table if file gets deleted from folder
         tableClass.__table__.drop(self.engine)
 
-    def insert_data(self, table_row):
+    def insert_row(self, table_row):
         from sqlalchemy.orm import sessionmaker
         Session = sessionmaker(bind=self.engine)
         session = Session()
         session.add(table_row)
         session.commit()
+
+    def insert_data_file(self, table_row):
+        pass
 
     def finish_transactions(self):
         self.conn.close()

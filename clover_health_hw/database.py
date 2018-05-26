@@ -17,9 +17,10 @@ class Database(object):
                 'Integer': Column(Integer)
             }
             return mapping.get(spec.datatype)
-
-        # allow dynamic column to be added in this tableClass
-        # as long as column type is valid in mapping dictionary
+        """
+        allow dynamic column to be added in this tableClass as long as column type is
+        valid in mapping dictionary
+        """
         attr_dict = {'__tablename__': tableSpec.name,
                     'id': Column(Integer, primary_key=True)}
         for spec in tableSpec.specs:
@@ -43,6 +44,7 @@ class Database(object):
         return tableClass
 
     def drop_table(self, tableClass):
+        # TODO: delete table if file gets deleted from folder
         tableClass.__table__.drop(self.engine)
 
     def insert_data(self, table_row):

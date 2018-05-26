@@ -21,7 +21,7 @@ def loadData():
         table_class_list.append(db.create_table(table_spec))
 
     # 2. read data file from data/ to insert data into table
-    table_class = table_class_list[0]
+    table_class = table_class_list[1]
     row = table_class(id=2, name="khoi", last_name="Tran", valid=1, count=3)
     db.insert_data(row)
 

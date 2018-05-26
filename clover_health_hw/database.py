@@ -45,12 +45,11 @@ class Database(object):
     def drop_table(self, tableClass):
         tableClass.__table__.drop(self.engine)
 
-    def insert_data(self, tableClass):
-        row = tableClass(id=2, name="khoi", last_name="Tran", valid=1, count=3)
+    def insert_data(self, table_row):
         from sqlalchemy.orm import sessionmaker
         Session = sessionmaker(bind=self.engine)
         session = Session()
-        session.add(row)
+        session.add(table_row)
         session.commit()
 
     def finish_transactions(self):

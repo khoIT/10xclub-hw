@@ -1,5 +1,5 @@
 
-class FileSpec(object):
+class TableSpec(object):
     def __init__(self, fileName, specs):
         # represent a table in db, contains list of ColumnSpec
         self.name = fileName
@@ -13,18 +13,21 @@ class ColumnSpec(object):
         self.datatype = datatype
 
 class DataRow(object):
-    def __init__(self, ):
+    def __init__(self, row):
+        self.row = row
 
 
 def parseSpecsFile(filePath):
+    columns = []
     with open(filePath,'r') as sf:
-        headers = sf.read().strip().split(',')
-        return headers
-def loadData():
-    #0. read specs file from specs/ to create table schema
-    # each file in specs denotes a filetype and a table schema
-    parseSpecsFile('specs/testformat1.csv')
+        headers = sf.readline().strip().split(',')
+        for line in sf:
+            columns.append(line.strip().split(','))
+        return columns
 
-    #1. read data file from data/ to insert data into table
-if __name__=="__main__":
-    loadData():
+def createTableSpec(fileName, specsFromFile):
+    specs = []
+    for row in specsFromFile:
+        spec = ColumnSpec(row[0], row[1], row[2])
+        specs.append(spec)
+    return TableSpec(fileName, specs)

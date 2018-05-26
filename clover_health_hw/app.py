@@ -9,8 +9,9 @@ def loadData():
     table_spec = createTableSpec(spec_file, spec_list)
 
     #1. create table with schema given by specs in spec_file
-    db = Database("localhost", "root", "password", "cloverhealth")    
-    db.create_table(table_spec)
+    db = Database("localhost", "root", "password", "cloverhealth")
+    tableClass = db.create_table(table_spec)
+    db.insert_data(tableClass)
 
     #2. read data file from data/ to insert data into table
 if __name__=="__main__":

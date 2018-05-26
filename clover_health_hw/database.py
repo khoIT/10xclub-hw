@@ -1,12 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
-from sqlalchemy import Column, Boolean, Integer, Text, Table
-
-
-from File_Parser import TableSpec
-
-
-# class TableSchema(Base):
+from sqlalchemy import Column, Boolean, Integer, Text, Table, String
 
 
 class Database(object):
@@ -15,34 +9,49 @@ class Database(object):
         self.engine = create_engine(engine_creds)
         self.metadata = MetaData(self.engine)
 
-    def column_generation(self, spec):
-        mapping = {
-            'Text': Column(Text(int(spec.width))),
-            'Boolean': Column(Boolean),
-            'Integer': Column(Integer)
-        }
-        return mapping.get(spec.datatype)
+    def __create_sqlalchemy_tableclass(self, tableSpec):
+        def column_generation(spec):
+            mapping = {
+                'Text': Column(String(int(spec.width))),
+                'Boolean': Column(Boolean),
+                'Integer': Column(Integer)
+            }
+            return mapping.get(spec.datatype)
 
-    def create_table(self, tableSpec):
+        # allow dynamic column to be added in this tableClass
+        # as long as column type is valid in mapping dictionary
         attr_dict = {'__tablename__': tableSpec.name,
                     'id': Column(Integer, primary_key=True)}
         for spec in tableSpec.specs:
-            attr_dict[spec.column_name] = self.column_generation(spec)
+            attr_dict[spec.column_name] = column_generation(spec)
 
+        # create class using inheritance from sqlalchemy.Base
         from sqlalchemy.ext.declarative import declarative_base
         Base = declarative_base()
+        tableClass = type('specTableClass', (Base,), attr_dict)
+        return tableClass
 
-        MyTableClass = type('MyTableClass', (Base,), attr_dict)
+    def create_table(self, tableSpec):
+        tableClass = self.__create_sqlalchemy_tableclass(tableSpec)
 
-        # table = Table('Example', self.metadata,
-        #       Column('id',Integer, primary_key=True),
-        #       Column('name',Text))
-        Base.metadata.create_all(self.engine)
-        import pdb; pdb.set_trace()
+        # if table exists, drop it so that new scheme can be updated
+        if self.engine.dialect.has_table(self.engine, tableSpec.name):
+            self.drop_table(tableClass)
 
+        # Base.metadata.create_all(self.engine)
+        tableClass.__table__.create(self.engine)
+        return tableClass
 
-        return query
+    def drop_table(self, tableClass):
+        tableClass.__table__.drop(self.engine)
 
+    def insert_data(self, tableClass):
+        row = tableClass(id=2, name="khoi", last_name="Tran", valid=1, count=3)
+        from sqlalchemy.orm import sessionmaker
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        session.add(row)
+        session.commit()
 
     def finish_transactions(self):
         self.conn.close()

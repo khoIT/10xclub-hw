@@ -2,7 +2,7 @@
 class TableSpec(object):
     def __init__(self, fileName, specs):
         # represent a table in db, contains list of ColumnSpec
-        self.name = fileName
+        self.name = fileName.split('/')[1]
         self.specs = specs
 
 class ColumnSpec(object):
@@ -10,7 +10,7 @@ class ColumnSpec(object):
     def __init__(self, column_name, width, datatype):
         self.column_name = column_name
         self.width = width
-        self.datatype = datatype
+        self.datatype = datatype.title()
 
 class DataRow(object):
     def __init__(self, row):

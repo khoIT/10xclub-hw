@@ -12,18 +12,36 @@ class ColumnSpec(object):
         self.width = width
         self.datatype = datatype.title()
 
-class DataFile(object):
-    def __init__(self, file_path, table_spec, rows):
-        self.tableSpec = tableSpec
-        self.row = rows
+class DataRow(object):
+    def __init__(self, row, table_spec):
+        self.row = []
+        idx = 0
+        while idx < len(table_spec.specs) and idx < len(row):
+            spec = table_spec.specs[idx]
+            try:
+                if spec.datatype == 'Boolean':
+                    self.row.append(int(row[idx]))
+                else:
+                    self.row.append(row[idx])
+            except ValueError as err:
+                print(err)
 
-def parseDataFile(file_path, table_spec):
+            idx += 1
+
+class DataFile(object):
+    def __init__(self, file_path, table_class, table_spec, rows):
+        self.table_class = table_class
+        self.rows = []
+        for row in rows:
+            self.rows.append(DataRow(row, table_spec))
+
+def parseDataFile(file_path, table_class, table_spec):
     columns = []
     with open(file_path,'r') as df:
         for line in df:
-            columns.append(line.strip().split(' '))
-    sf.close()
-    return DataFile(file_path, table_spec, columns)
+            columns.append(line.strip().split())
+    df.close()
+    return DataFile(file_path, table_class, table_spec, columns)
 
 def parseSpecsFile(file_path):
     columns = []

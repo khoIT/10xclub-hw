@@ -54,8 +54,18 @@ class Database(object):
         session.add(table_row)
         session.commit()
 
-    def insert_data_file(self, table_row):
-        pass
+    def insert_data_file(self, data_file):
+        columns = data_file.table_class.__table__.columns.keys()
+        for dataRow in data_file.rows:
+            attr_dict = {}
+
+            idx = 1
+            while idx < len(columns) and idx <= len(dataRow.row):
+                attr_dict[columns[idx]] = dataRow.row[idx-1]
+                idx += 1
+
+            row = data_file.table_class(**attr_dict)
+            self.insert_row(row)
 
     def finish_transactions(self):
         self.conn.close()

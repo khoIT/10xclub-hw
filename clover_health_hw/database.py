@@ -56,6 +56,7 @@ class Database(object):
 
     def insert_data_file(self, data_file):
         columns = data_file.table_class.__table__.columns.keys()
+        
         for dataRow in data_file.rows:
             attr_dict = {}
 
@@ -63,7 +64,6 @@ class Database(object):
             while idx < len(columns) and idx <= len(dataRow.row):
                 attr_dict[columns[idx]] = dataRow.row[idx-1]
                 idx += 1
-
             row = data_file.table_class(**attr_dict)
             self.insert_row(row)
 

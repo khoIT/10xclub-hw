@@ -17,7 +17,7 @@ class Test_Database(unittest.TestCase):
         table_class = self.db.create_table(self.table_spec)
         self.assertEqual(self.db.engine.dialect.has_table(self.db.engine, self.table_spec.name), True)
 
-    def test_insert_should_put_a_record_into_test_table(self):
+    def test_insert_row_should_put_a_record_into_test_table(self):
         table_class = self.db.create_table(self.table_spec)
         row = table_class(id=100, test_column_1="khoi", test_column_2="clover")
         self.db.insert_row(row)

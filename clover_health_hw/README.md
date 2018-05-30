@@ -11,4 +11,5 @@ user:          "root"
 password:      "password"
 db name:       "cloverhealth"
 ```
-#### Refer to app.py for a basic use case of parsing spec and data files
+### For a basic use case of parsing spec and data files
+_Refer to app.py_

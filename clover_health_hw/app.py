@@ -28,6 +28,7 @@ def loadData():
         if spec_file_name not in table_class_list:
             print ("Couldn't find format file for {}".format(file_path))
             continue
+        # convert file to a datafile object that has info about relevant table
         data_file = parseDataFile(file_path, table_class_list[spec_file_name], table_spec_list[spec_file_name])
         db.insert_data_file(data_file)
 

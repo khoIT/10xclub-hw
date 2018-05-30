@@ -15,7 +15,7 @@ class TestParseSpecsFile(unittest.TestCase):
         self.assertEqual(len(tablespec.specs), 3)
         specs = tablespec.specs
         self.assertEqual(specs[0].column_name, 'name')
-        self.assertEqual(specs[0].width, '10')
+        self.assertEqual(specs[0].width, 10)
         self.assertEqual(specs[0].datatype, 'Text')
 
 if __name__ == '__main__':

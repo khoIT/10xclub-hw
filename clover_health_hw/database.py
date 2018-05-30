@@ -1,12 +1,6 @@
 from sqlalchemy import create_engine
 from sqlalchemy import MetaData
-from sqlalchemy import Column, Boolean, Integer, Text, Table
-
-
-from File_Parser import TableSpec
-
-
-# class TableSchema(Base):
+from sqlalchemy import Column, Boolean, Integer, Text, Table, String
 
 
 class Database(object):
@@ -15,34 +9,63 @@ class Database(object):
         self.engine = create_engine(engine_creds)
         self.metadata = MetaData(self.engine)
 
-    def column_generation(self, spec):
-        mapping = {
-            'Text': Column(Text(int(spec.width))),
-            'Boolean': Column(Boolean),
-            'Integer': Column(Integer)
-        }
-        return mapping.get(spec.datatype)
-
-    def create_table(self, tableSpec):
-        attr_dict = {'__tablename__': tableSpec.name,
+    def __create_sqlalchemy_tableclass(self, table_spec):
+        def column_generation(spec):
+            mapping = {
+                'Text': Column(String(int(spec.width))),
+                'Boolean': Column(Boolean),
+                'Integer': Column(Integer)
+            }
+            return mapping.get(spec.datatype)
+        """
+        allow dynamic column to be added in this tableClass as long as column type is
+        valid in mapping dictionary
+        """
+        attr_dict = {'__tablename__': table_spec.name,
                     'id': Column(Integer, primary_key=True)}
-        for spec in tableSpec.specs:
-            attr_dict[spec.column_name] = self.column_generation(spec)
+        for spec in table_spec.specs:
+            attr_dict[spec.column_name] = column_generation(spec)
 
+        # create class using inheritance from sqlalchemy.Base
         from sqlalchemy.ext.declarative import declarative_base
         Base = declarative_base()
+        tableClass = type('specTableClass', (Base,), attr_dict)
+        return tableClass
 
-        MyTableClass = type('MyTableClass', (Base,), attr_dict)
+    def create_table(self, tableSpec):
+        tableClass = self.__create_sqlalchemy_tableclass(tableSpec)
 
-        # table = Table('Example', self.metadata,
-        #       Column('id',Integer, primary_key=True),
-        #       Column('name',Text))
-        Base.metadata.create_all(self.engine)
-        import pdb; pdb.set_trace()
+        # if table exists, drop it so that new scheme can be updated
+        if self.engine.dialect.has_table(self.engine, tableSpec.name):
+            self.drop_table(tableClass)
 
+        # Base.metadata.create_all(self.engine)
+        tableClass.__table__.create(self.engine)
+        return tableClass
 
-        return query
+    def drop_table(self, tableClass):
+        # TODO: delete table if file gets deleted from folder
+        tableClass.__table__.drop(self.engine)
 
+    def insert_row(self, table_row):
+        from sqlalchemy.orm import sessionmaker
+        Session = sessionmaker(bind=self.engine)
+        session = Session()
+        session.add(table_row)
+        session.commit()
+
+    def insert_data_file(self, data_file):
+        columns = data_file.table_class.__table__.columns.keys()
+
+        for dataRow in data_file.rows:
+            attr_dict = {}
+
+            idx = 1
+            while idx < len(columns) and idx <= len(dataRow.row):
+                attr_dict[columns[idx]] = dataRow.row[idx-1]
+                idx += 1
+            row = data_file.table_class(**attr_dict)
+            self.insert_row(row)
 
     def finish_transactions(self):
         self.conn.close()
